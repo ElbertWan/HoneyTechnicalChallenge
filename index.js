@@ -241,6 +241,23 @@ const calculateEnergyUsageForDay = (monthUsageProfile, day) => {
   let currentDay = 0;
   let monthlyEvents = monthUsageProfile.events;
 
+  //returns energy usage if required day is bigger than final date of final event AND there are no events;
+  if (monthlyEvents.length === 0) {
+    return calculateEnergyUsageSimple({
+      initial: initialDailyEnergyState,
+      events: [],
+    });
+    //returns energy usage if required day is bigger than day after final event;
+  } else if (
+    day >
+    Math.ceil(monthlyEvents[monthlyEvents.length - 1].timestamp / MAX_IN_PERIOD)
+  ) {
+    return calculateEnergyUsageSimple({
+      initial: monthlyEvents[monthlyEvents.length - 1].state,
+      events: [],
+    });
+  }
+
   for (let x = 0; x < monthlyEvents.length; x++) {
     //while loop takes into account when there are day skips between change events.
     while (
@@ -282,14 +299,6 @@ const calculateEnergyUsageForDay = (monthUsageProfile, day) => {
       dailyEnergyEvents[dailyEnergyEvents.length - 1].state;
   }
   currentDay++;
-
-  //returns energy usage if required day is bigger than final date of final event;
-  if (day > currentDay) {
-    return calculateEnergyUsageSimple({
-      initial: initialDailyEnergyState,
-      events: [],
-    });
-  }
 
   // returns energy usage if day is within first day and day of last event
   return calculateEnergyUsageSimple(energyEventsByDay[day - 1]);
