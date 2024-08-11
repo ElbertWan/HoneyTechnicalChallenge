@@ -1,7 +1,7 @@
 class EnergyEvent {
-  constructor(state, time) {
+  constructor(state, duration) {
     this.state = state;
-    this.time = time;
+    this.duration = duration;
   }
 }
 
