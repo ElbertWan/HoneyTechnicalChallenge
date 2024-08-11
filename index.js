@@ -1,12 +1,12 @@
-const { cleanEvents } = require('./helpers/cleanEvents/index');
+const { cleanEvents } = require("./helpers/cleanEvents/index");
 const {
   validateMonthUsageVariables,
   validateDailyVariables,
-} = require('./validation/index');
-const { EnergyEvent } = require('./types/EnergyEvent/index');
+} = require("./validation/index");
+const { EnergyEvent } = require("./types/EnergyEvent/index");
 const {
   EnergyEventInProfileFormat,
-} = require('./types/EnergyEventInProfileFormat/index');
+} = require("./types/EnergyEventInProfileFormat/index");
 
 /* The maximum number of minutes in a period (a day) */
 
@@ -51,7 +51,7 @@ const calculateEnergyUsageSimple = (profile) => {
 
   //in the case that there are no events but there is an initial state
   if (profile.events.length === 0) {
-    if (profile.initial === 'on') {
+    if (profile.initial === "on") {
       return MAX_IN_PERIOD;
     }
     return 0;
@@ -86,7 +86,7 @@ const calculateEnergyUsageSimple = (profile) => {
 
   // filter out events where state is 'on'
   const filteredOnEnergyEvents = energyEvents.filter(
-    (energyEvent) => energyEvent.state === 'on'
+    (energyEvent) => energyEvent.state === "on"
   );
   // add up times of all 'on' events
   const totalEnergyUsed = filteredOnEnergyEvents.reduce((acc, energyEvent) => {
@@ -136,10 +136,10 @@ const calculateEnergySavings = (profile) => {
 
   //in the case that there are no events but there is an initial state
   if (profile.events.length === 0) {
-    if (profile.initial === 'on') {
+    if (profile.initial === "on") {
       return 0;
     }
-    if (profile.initial === 'off') {
+    if (profile.initial === "off") {
       return 0;
     }
     return MAX_IN_PERIOD;
@@ -159,11 +159,11 @@ const calculateEnergySavings = (profile) => {
 
     //if off status comes after auto-off, we push an auto-off state. This won't affect the final value as we are using filter/reduce on 'auto-off'
     if (
-      energyEvents[energyEvents.length - 1].state === 'auto-off' &&
-      events[x].state === 'off' &&
+      energyEvents[energyEvents.length - 1].state === "auto-off" &&
+      events[x].state === "off" &&
       energyEvents.length > 0
     ) {
-      eventState = 'auto-off';
+      eventState = "auto-off";
     }
     energyEvents.push(
       new EnergyEvent(eventState, events[x + 1].timestamp - events[x].timestamp)
@@ -174,10 +174,10 @@ const calculateEnergySavings = (profile) => {
   //for the edge case if final value is off when previous value is auto-off
   let finalEventState = events[events.length - 1].state;
   if (
-    energyEvents[energyEvents.length - 1].state === 'auto-off' &&
-    events[events.length - 1].state === 'off'
+    energyEvents[energyEvents.length - 1].state === "auto-off" &&
+    events[events.length - 1].state === "off"
   ) {
-    finalEventState = 'auto-off';
+    finalEventState = "auto-off";
   }
   const finalEnergyEvent = new EnergyEvent(
     finalEventState,
@@ -187,7 +187,7 @@ const calculateEnergySavings = (profile) => {
 
   //filter events by state of 'auto-off'
   const filteredOnEnergyEvents = energyEvents.filter(
-    (energyEvent) => energyEvent.state === 'auto-off'
+    (energyEvent) => energyEvent.state === "auto-off"
   );
   //find total energy saved using reduce
   const totalEnergySaved = filteredOnEnergyEvents.reduce((acc, energyEvent) => {
@@ -244,7 +244,6 @@ const calculateEnergyUsageForDay = (monthUsageProfile, day) => {
   let currentDay = 0;
   let monthlyEvents = monthUsageProfile.events;
 
-
   for (let x = 0; x < monthlyEvents.length; x++) {
     //while loop is used to calculate days between usage of energy.
     while (
@@ -279,11 +278,11 @@ const calculateEnergyUsageForDay = (monthUsageProfile, day) => {
   currentDay++;
 
   //returns calculated value if day is above final date of final event;
-  if (day > currentDay){
+  if (day > currentDay) {
     return calculateEnergyUsageSimple({
       initial: initialEnergyState,
       events: [],
-    }) 
+    });
   }
 
   return calculateEnergyUsageSimple(energyEventsByDay[day - 1]);
