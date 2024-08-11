@@ -136,9 +136,9 @@ const calculateEnergySavings = (profile) => {
   if (profile.events.length === 0) {
     if (profile.initial === "on") {
       return 0;
-    }else if (profile.initial === "off") {
+    } else if (profile.initial === "off") {
       return 0;
-    }else {
+    } else {
       return MAX_IN_PERIOD;
     }
   }
@@ -248,7 +248,11 @@ const calculateEnergyUsageForDay = (monthUsageProfile, day) => {
     ) {
       currentDay++;
       // pushing previous day's profile to energyEventsByDay
-      pushDayProfile(energyEventsByDay, dailyEnergyEvents, initialDailyEnergyState);
+      pushDayProfile(
+        energyEventsByDay,
+        dailyEnergyEvents,
+        initialDailyEnergyState
+      );
 
       // resetting initialDailyEnergyState by latest event state
       if (dailyEnergyEvents.length > 0) {
@@ -274,7 +278,8 @@ const calculateEnergyUsageForDay = (monthUsageProfile, day) => {
   //push final day after last event has been added
   pushDayProfile(energyEventsByDay, dailyEnergyEvents, initialDailyEnergyState);
   if (dailyEnergyEvents.length > 0) {
-    initialDailyEnergyState = dailyEnergyEvents[dailyEnergyEvents.length - 1].state;
+    initialDailyEnergyState =
+      dailyEnergyEvents[dailyEnergyEvents.length - 1].state;
   }
   currentDay++;
 
